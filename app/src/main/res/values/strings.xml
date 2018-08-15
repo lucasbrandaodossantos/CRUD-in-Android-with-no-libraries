@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Android Challenge</string>
+
+    <string name="create">Create</string>
+    <string name="read">Read</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="name">Name: </string>
+    <string name="age">Age: </string>
+
+    <string name="title">Choose an option:</string>
+    <string name="insert_data">Insert the data above:</string>
+    <string name="save_data">Save data</string>
+    <string name="read_data">Read data</string>
+    <string name="delete_data">Delete data</string>
+    <string name="hint_name">Insert name</string>
+    <string name="hint_age">Insert age</string>
+
+    <string name="hint_new_name">Insert new name</string>
+    <string name="hint_new_age">Insert new age</string>
+
+    <string name="new_data">New data: </string>
+
 </resources>
