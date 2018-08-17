@@ -3,18 +3,22 @@
 
     <string name="create">Create</string>
     <string name="read">Read</string>
-    <string name="update">Update</string>
+    <string name="update">Update data</string>
     <string name="delete">Delete</string>
-    <string name="name">Name: </string>
-    <string name="age">Age: </string>
+    <string name="name">Name</string>
+    <string name="age">Date of birth</string>
+    <string name="email">E-mail</string>
+    <string name="phone">Phone</string>
 
     <string name="title">Choose an option:</string>
-    <string name="insert_data">Insert the data above:</string>
+    <string name="insert_data">Insert data</string>
     <string name="save_data">Save data</string>
-    <string name="read_data">Read data</string>
+    <string name="read_data">Show data</string>
     <string name="delete_data">Delete data</string>
     <string name="hint_name">Insert name</string>
-    <string name="hint_age">Insert age</string>
+    <string name="hint_age">Insert date of birth</string>
+    <string name="hint_phone">Insert phone</string>
+    <string name="hint_email">Insert email</string>
 
     <string name="hint_new_name">Insert new name</string>
     <string name="hint_new_age">Insert new age</string>
