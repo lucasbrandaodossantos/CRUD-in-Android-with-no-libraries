@@ -2,19 +2,26 @@ package com.example.lucas.androidchallenge;
 
 public class User {
 
-    String name,dateofbirth,email;
-    int phone;
+    String name,email;
+    int phone,id;
 
     public User(){
 
     }
 
-    public User(String name,int phone,String email,String dateofbirth){
+    public User(int id, String name,int phone,String email){
     //Used to update and insert
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
     }
 
-    public User(String name){
+    public User(String name,int phone,String email){
     //Used to delete
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
     }
 
 
@@ -27,14 +34,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDateofbirth() {
-        return dateofbirth;
-    }
-
-    public void setDateofbirth(String dateofbirth) {
-        this.dateofbirth = dateofbirth;
     }
 
     public String getEmail() {
@@ -51,5 +50,13 @@ public class User {
 
     public void setPhone(int phone) {
         this.phone = phone;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
