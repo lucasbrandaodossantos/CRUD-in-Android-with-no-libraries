@@ -5,37 +5,35 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.example.lucas.androidchallenge.DBStructure.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 10;
     private static final String DB_NAME = "Users";
-    private static final String TABLE_NAME = "userdata";
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_PHONE= "phone";
-    private static final String COLUMN_EMAIL = "email";
 
-    public DBOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public DBOpenHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query_create = "CREATE TABLE " + TABLE_NAME + " (" +
-                 COLUMN_ID + " INTEGER PRIMARY KEY, " +
-                 COLUMN_NAME + " TEXT, " +
-                 COLUMN_PHONE + " TEXT, " +
-                 COLUMN_EMAIL + " TEXT)";
+        String query_create = "CREATE TABLE " + DBStructure.TABLE_NAME + " (" +
+                 DBStructure._ID + " INTEGER PRIMARY KEY, " +
+                 DBStructure.COLUMN_NAME + " TEXT, " +
+                 DBStructure.COLUMN_PHONE + " TEXT, " +
+                 DBStructure.COLUMN_EMAIL + " TEXT" +
+                " )";
 
         db.execSQL(query_create);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        db.execSQL("DROP TABLE IF EXISTS " +DBStructure.TABLE_NAME);
+        this.onCreate(db);
     }
 
     /*CRUD BELOW*/
@@ -44,52 +42,57 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_NAME, u.name);
-        values.put(COLUMN_PHONE, u.phone);
-        values.put(COLUMN_EMAIL, u.email);
+        values.put(DBStructure.COLUMN_NAME, u.name);
+        values.put(DBStructure.COLUMN_PHONE, u.phone);
+        values.put(DBStructure.COLUMN_EMAIL, u.email);
 
-        db.insert(TABLE_NAME, null, values);
+        db.insert(DBStructure.TABLE_NAME, null, values);
+        db.close();
+
+    }
+
+    User selectUser (int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.query(DBStructure.TABLE_NAME, new String[]{DBStructure._ID,
+                        DBStructure.COLUMN_NAME,DBStructure.COLUMN_PHONE,DBStructure.COLUMN_EMAIL},DBStructure._ID + " = ?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+
+        if (c != null){
+            c.moveToFirst();
+        }
+        User user = new User();
+        return user;
+    }
+
+
+    void updateUser (User u) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(DBStructure.COLUMN_NAME, u.name);
+        values.put(DBStructure.COLUMN_PHONE, u.phone);
+        values.put(DBStructure.COLUMN_EMAIL, u.email);
+
+        db.update(DBStructure.TABLE_NAME,values,DBStructure._ID + " = ?", new String [] {String.valueOf(u.getId())});
         db.close();
 
     }
 
     void deleteUser (User u) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String [] {String.valueOf(u.getId())});
+        db.delete(DBStructure.TABLE_NAME, DBStructure._ID + " = ?", new String [] {String.valueOf(u.getId())});
         db.close();
     }
 
-    void updateUser (User u) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(COLUMN_NAME, u.name);
-        values.put(COLUMN_PHONE, u.phone);
-        values.put(COLUMN_EMAIL, u.email);
-
-        db.update(TABLE_NAME,values,COLUMN_ID + " = ?", new String [] {String.valueOf(u.getId())});
-        db.close();
-
-    }
+//*****Listing all users registered******//
 
 
-    User showUser (int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.query(TABLE_NAME, new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_PHONE, COLUMN_EMAIL}, COLUMN_ID + " = ?",
-                new String [] {String.valueOf(id)}, null,null,null,null);
-        if (c != null){
-            c.moveToFirst();
-        }
-        User user = new User(c.getString(0), Integer.parseInt(c.getString(1)), c.getString(2));
-        return user;
-    }
-
-    public List<User> listAllUsers (){
+    public List<User> listAllUsers () {
 
         List<User> listUsers = new ArrayList<User>();
 
-        String sqlQuery = "SELECT * FROM " + TABLE_NAME;
+        String sqlQuery = "SELECT * FROM " + DBStructure.TABLE_NAME;
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -98,17 +101,15 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()){
             do{
                 User u = new User();
-                u.setName(c.getString(0));
-                u.setPhone(Integer.parseInt(c.getString(1)));
-                u.setEmail(c.getString(2));
-                u.setId(Integer.parseInt(c.getString(3)));
+                u.setId(Integer.parseInt(c.getString(0)));
+                u.setName(c.getString(1));
+                u.setPhone(c.getString(2));
+                u.setEmail(c.getString(3));
                 listUsers.add(u);
 
             } while (c.moveToNext());
 
         }
-        return listAllUsers();
+        return listUsers;
     }
-
-
 }

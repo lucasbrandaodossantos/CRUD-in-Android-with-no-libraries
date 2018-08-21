@@ -4,6 +4,7 @@ package com.example.lucas.androidchallenge;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,12 +19,12 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    DBOpenHelper db = new DBOpenHelper(this, null, null, 1);
+    DBOpenHelper db = new DBOpenHelper(this);
     User u;
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> arrayList;
     ListView lv;
-    EditText edtName, edtPhone, edtEmail, edtAge, edtID;
+    EditText edtName, edtPhone, edtEmail, edtID;
     Button btnInsert, btnDelete;
     LinearLayout linearLayout;
 
@@ -39,35 +40,16 @@ public class MainActivity extends AppCompatActivity {
         edtName = (EditText) findViewById(R.id.edtName);
         edtID = (EditText) findViewById(R.id.edtID);
         lv = (ListView) findViewById(R.id.lv);
-        //listUsers();
+        listUsers();
 
-
-        /*Teste do CRUD*/
-        //insert ok
-        /*
-        db.insertUser(new User("Lucas",951752490,"lucasondionisia@hotmail.com"));
-        db.insertUser(new User("Maria",959348933,"maria@hotmail.com"));
-        db.insertUser(new User("Carlos",953435430,"carlos@hotmail.com"));
-        db.insertUser(new User("Jose",951798778,"jose@hotmail.com"));
-        db.insertUser(new User("Carlos",953435430,"carlos@hotmail.com"));
-        db.insertUser(new User("Jose",951798778,"jose@hotmail.com"));
-        db.insertUser(new User("Carlos",953435430,"carlos@hotmail.com"));
-        db.insertUser(new User("Jose",951798778,"jose@hotmail.com"));
-
-        Toast.makeText(MainActivity.this, "Cadastrado com sucesso",Toast.LENGTH_SHORT).show();*/
-        //delete ok
-//       User u = new User();
-//        u.setId(0);
-//        db.deleteUser(u);
-//        Toast.makeText(MainActivity.this, "Apagado com sucesso",Toast.LENGTH_SHORT).show();
-//
-//
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String data = (String) lv.getItemAtPosition(i);
-                String id = data.substring(0, data.indexOf("-"));
-                User u = db.showUser(Integer.parseInt(id));
+                String content = (String) lv.getItemAtPosition(i);
+
+                String id = content.substring(0, content.indexOf("-"));
+
+                User u = db.selectUser(Integer.parseInt(id));
 
                 edtID.setText(String.valueOf(u.getId()));
                 edtName.setText(u.getName());
@@ -75,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
                 edtEmail.setText(u.getEmail());
             }
         });
+
+
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,63 +68,78 @@ public class MainActivity extends AppCompatActivity {
                 String email = edtEmail.getText().toString();
 
 
-                if (name.isEmpty()){
-                    edtName.setText("Please fill this field!");
-                }else if (id.isEmpty()){
+                if (name.isEmpty()) {
+                    edtName.setHint("Fill this field");
+                } else if (phone.isEmpty()) {
+                    edtPhone.setHint("Fill this field");
+                } else if (email.isEmpty()) {
+                    edtEmail.setHint("Fill this field");
+                } else if (id.isEmpty()) {
                     //insert
-                    db.insertUser(new User(name,Integer.parseInt(phone),email));
-                    Toast.makeText(MainActivity.this, "Registered user successfully",Toast.LENGTH_SHORT).show();
+                    db.insertUser(new User(name,phone,email));
+                    Toast.makeText(MainActivity.this, "Registered user successfully", Toast.LENGTH_SHORT).show();
                     cleanall();
                     listUsers();
-                }else {
+                } else if (!id.isEmpty()) {
                     //update
-                    db.updateUser(new User (Integer.parseInt(id),name,Integer.parseInt(phone),email));
-                    Toast.makeText(MainActivity.this, "Updated user successfully",Toast.LENGTH_SHORT).show();
+                    db.updateUser(new User(Integer.parseInt(id), name, phone, email));
+                    Toast.makeText(MainActivity.this, "Updated user successfully", Toast.LENGTH_SHORT).show();
                     cleanall();
                     listUsers();
                 }
             }
         });
+
+
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String id = edtID.getText().toString();
 
                 if (id.isEmpty()){
-                    Toast.makeText(MainActivity.this, "No user selected",Toast.LENGTH_SHORT).show();
-                } else{
-                    User u = new User();
-                    u.setId(Integer.parseInt(id));
-                    db.deleteUser(u);
-                    Toast.makeText(MainActivity.this, "User deleted successfully",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please select a user", Toast.LENGTH_SHORT).show();
+                } else {
+                    User user = new User();
+                    user.setId(Integer.parseInt(id));
+                    db.deleteUser(user);
+                    Toast.makeText(MainActivity.this, "User deleted", Toast.LENGTH_SHORT).show();
                     cleanall();
                     listUsers();
                 }
+
             }
         });
     }
-/*****************************************************************************/
-void cleanall (){
-    edtName.setText("");
-    edtPhone.setText("");
-    edtEmail.setText("");
 
-    edtName.requestFocus();
-}
-public void listUsers() {
 
-    List<User> users = db.listAllUsers();
+    /*****************************************************************************/
 
-    arrayList = new ArrayList<String>();
 
-    arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, arrayList);
+    void cleanall() {
+        edtName.setText("");
+        edtPhone.setText("");
+        edtEmail.setText("");
 
-    lv.setAdapter(arrayAdapter);
+        edtName.requestFocus();
+    }
 
-    for (User u: users){
-        Log.d("Lista", "\nID:" +u.getId() + "Name: "+u.getName());
-//        arrayList.add(u.getId()+ "-" + u.getName());
-//        arrayAdapter.notifyDataSetChanged();
+
+    public void listUsers() {
+
+        List<User> users = db.listAllUsers();
+
+        arrayList = new ArrayList<String>();
+
+        arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, arrayList);
+
+        lv.setAdapter(arrayAdapter);
+
+        for (User u : users) {
+            arrayList.add(u.getId()+ "-" +u.getName());
+            arrayAdapter.notifyDataSetChanged();
+        }
     }
 }
-}
+
+
+

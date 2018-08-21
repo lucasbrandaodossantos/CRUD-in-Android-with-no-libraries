@@ -2,23 +2,23 @@ package com.example.lucas.androidchallenge;
 
 public class User {
 
-    String name,email;
-    int phone,id;
+    String name, phone, email;
+    int id;
 
     public User(){
 
     }
 
-    public User(int id, String name,int phone,String email){
-    //Used to update and insert
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
+    public User(int _id, String _name, String _phone, String _email){
+    //Used to update
+        this.id = _id;
+        this.name = _name;
+        this.phone = _phone;
+        this.email = _email;
     }
 
-    public User(String name,int phone,String email){
-    //Used to delete
+    public User(String name, String phone, String email){
+    //Used to insert
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -44,11 +44,11 @@ public class User {
         this.email = email;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
