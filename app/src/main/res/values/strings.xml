@@ -6,6 +6,7 @@
     <string name="update">Update data</string>
     <string name="delete">Delete</string>
     <string name="name">Name</string>
+    <string name="clear_all">Clear</string>
     <string name="age">Date of birth</string>
     <string name="email">E-mail</string>
     <string name="phone">Phone</string>

@@ -10,11 +10,11 @@ public class User {
     }
 
     public User(int _id, String _name, String _phone, String _email){
-    //Used to update
-        this.id = _id;
-        this.name = _name;
-        this.phone = _phone;
-        this.email = _email;
+            //Used to update
+            this.id = _id;
+            this.name = _name;
+            this.phone = _phone;
+            this.email = _email;
     }
 
     public User(String name, String phone, String email){

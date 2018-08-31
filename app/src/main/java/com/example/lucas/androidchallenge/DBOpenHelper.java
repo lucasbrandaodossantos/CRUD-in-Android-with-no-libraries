@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 10;
+    private static final int DB_VERSION = 11;
     private static final String DB_NAME = "Users";
 
     public DBOpenHelper(Context context) {
@@ -53,15 +53,15 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     User selectUser (int id) {
         SQLiteDatabase db = this.getReadableDatabase();
+        String query_select = "SELECT * FROM " +DBStructure.TABLE_NAME + " WHERE " +DBStructure._ID + " = " + id;
+//        Cursor c = db.rawQuery(query_select, new String[]{DBStructure._ID});
 
-        Cursor c = db.query(DBStructure.TABLE_NAME, new String[]{DBStructure._ID,
-                        DBStructure.COLUMN_NAME,DBStructure.COLUMN_PHONE,DBStructure.COLUMN_EMAIL},DBStructure._ID + " = ?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
+        Cursor c = db.query(DBStructure.TABLE_NAME, new String[]{DBStructure._ID, DBStructure.COLUMN_NAME, DBStructure.COLUMN_PHONE, DBStructure.COLUMN_EMAIL}, DBStructure._ID + " = ?", new String[]{String.valueOf(id)}, null, null, null, null);
 
         if (c != null){
             c.moveToFirst();
         }
-        User user = new User();
+        User user = new User(Integer.parseInt(c.getString(0)), c.getString(1),c.getString(2),c.getString(3));
         return user;
     }
 

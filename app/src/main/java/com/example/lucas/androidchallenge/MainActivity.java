@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> arrayList;
     ListView lv;
     EditText edtName, edtPhone, edtEmail, edtID;
-    Button btnInsert, btnDelete;
+    Button btnInsert, btnDelete, btnClear;
     LinearLayout linearLayout;
 
     @Override
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnInsert = (Button) findViewById(R.id.btnInsert);
+        btnClear = (Button) findViewById(R.id.btnClearAll);
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtPhone = (EditText) findViewById(R.id.edtPhone);
         edtName = (EditText) findViewById(R.id.edtName);
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 edtEmail.setText(u.getEmail());
             }
         });
-
 
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     User user = new User();
                     user.setId(Integer.parseInt(id));
+
                     db.deleteUser(user);
                     Toast.makeText(MainActivity.this, "User deleted", Toast.LENGTH_SHORT).show();
                     cleanall();
@@ -109,7 +110,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    btnClear.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            cleanall();
+
+        }
+    });
     }
+
 
 
     /*****************************************************************************/
@@ -119,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         edtName.setText("");
         edtPhone.setText("");
         edtEmail.setText("");
+        edtID.setText("");
 
         edtName.requestFocus();
     }
